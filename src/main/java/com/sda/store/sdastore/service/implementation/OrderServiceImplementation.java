@@ -1,9 +1,6 @@
 package com.sda.store.sdastore.service.implementation;
 
-import com.sda.store.sdastore.model.Order;
-import com.sda.store.sdastore.model.OrderLine;
-import com.sda.store.sdastore.model.Product;
-import com.sda.store.sdastore.model.User;
+import com.sda.store.sdastore.model.*;
 import com.sda.store.sdastore.repository.OrderRepository;
 import com.sda.store.sdastore.repository.ProductRepository;
 import com.sda.store.sdastore.repository.UserRepository;
@@ -36,13 +33,15 @@ public class OrderServiceImplementation implements OrderService {
     }
 
     @Override
-    public Order createOrder(List<OrderLine> orderLineList) {
+    public Order createOrder(List<OrderLine> orderLineList, PaymentDetails paymentDetails) {
         Order order = new Order();
         UserDetails springUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findByEmail(springUser.getUsername());
+        paymentDetails.setUser(user);
         order.setOrderLineList(orderLineList);
         order.setUser(user);
         order.setTotal(getTotal(orderLineList));
+        order.setPaymentDetails(paymentDetails);
 
         //salvam order
         Order dbOrder = orderRepository.save(order);

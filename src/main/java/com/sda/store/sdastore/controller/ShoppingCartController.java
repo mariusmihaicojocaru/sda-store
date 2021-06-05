@@ -1,5 +1,7 @@
 package com.sda.store.sdastore.controller;
 
+import com.sda.store.sdastore.controller.dto.OrderRequestDto;
+import com.sda.store.sdastore.controller.dto.PaymentDetailsDto;
 import com.sda.store.sdastore.controller.dto.shoppingCart.ShoppingCartOrderLineDto;
 import com.sda.store.sdastore.controller.dto.shoppingCart.ProductShoppingCartResponseDto;
 import com.sda.store.sdastore.controller.dto.shoppingCart.ShoppingCartResponseDto;
@@ -54,14 +56,14 @@ public class ShoppingCartController {
     }
 
     @PostMapping(path = "/order")
-    public HttpStatus makeOrder(@RequestBody List<ShoppingCartOrderLineDto> shoppingCartOrderLineDtos) {
+    public HttpStatus makeOrder(@RequestBody OrderRequestDto orderRequestDto) {
         List<OrderLine> orderLines =
-                shoppingCartOrderLineDtos
+                orderRequestDto.getShoppingCartOrderLineDtoList()
                 .stream()
                 .map(shoppingCartOrderLineDto -> mapOrderLineDtoToOrderLine(shoppingCartOrderLineDto))
                 .collect(Collectors.toList());
 
-        Order dbOrder = orderService.createOrder(orderLines);
+        Order dbOrder = orderService.createOrder(orderLines, mapPaymentDetailsDtoToPaymentDetails(orderRequestDto.getPaymentDetailsDto()));
 
         if(dbOrder != null){
             return HttpStatus.OK;
@@ -98,6 +100,16 @@ public class ShoppingCartController {
         orderLine.setProduct(product);
         orderLine.setQuantity(shoppingCartOrderLineDto.getQuantity());
         return orderLine;
+    }
+
+    public PaymentDetails mapPaymentDetailsDtoToPaymentDetails(PaymentDetailsDto paymentDetailsDto){
+        PaymentDetails paymentDetails = new PaymentDetails();
+        paymentDetails.setCardHolder(paymentDetailsDto.getCardHolder());
+        paymentDetails.setCardNumber(paymentDetailsDto.getCardNumber());
+        paymentDetails.setExpirationDate(paymentDetailsDto.getExpirationDate());
+        paymentDetails.setCardProvider(paymentDetailsDto.getCardProvider());
+
+        return paymentDetails;
     }
 
     public ShoppingCartResponseDto mapShoppingCartToResponseDto(ShoppingCart shoppingCart){

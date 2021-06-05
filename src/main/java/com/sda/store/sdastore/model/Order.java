@@ -19,6 +19,9 @@ public class Order {
     @Column(nullable = false)
     private Double total;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private PaymentDetails paymentDetails;
+
     //relatie cu payment details
 
     public Long getId() {
@@ -51,5 +54,13 @@ public class Order {
 
     public void setTotal(Double total) {
         this.total = total;
+    }
+
+    public PaymentDetails getPaymentDetails() {
+        return paymentDetails;
+    }
+
+    public void setPaymentDetails(PaymentDetails paymentDetails) {
+        this.paymentDetails = paymentDetails;
     }
 }
