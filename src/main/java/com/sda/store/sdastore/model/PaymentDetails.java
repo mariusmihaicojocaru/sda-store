@@ -15,6 +15,7 @@ public class PaymentDetails {
     @Column(length = 16)
     private String cardNumber;
 
+    @Column
     private Date expirationDate;
 
     // nu am voie sa le salvez
