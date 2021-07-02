@@ -1,6 +1,5 @@
 package com.sda.store.sdastore.service.implementation;
 
-import com.sda.store.sdastore.controller.dto.user.UserDto;
 import com.sda.store.sdastore.exception.ResourceNotFoundInDatabase;
 import com.sda.store.sdastore.model.Category;
 import com.sda.store.sdastore.model.Product;

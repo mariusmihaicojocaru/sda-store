@@ -2,16 +2,11 @@ package com.sda.store.sdastore.controller;
 
 import com.sda.store.sdastore.controller.dto.user.AddressDto;
 import com.sda.store.sdastore.controller.dto.user.UserDto;
-import com.sda.store.sdastore.model.Address;
-import com.sda.store.sdastore.model.Role;
-import com.sda.store.sdastore.model.User;
+import com.sda.store.sdastore.model.*;
 import com.sda.store.sdastore.service.RoleService;
 import com.sda.store.sdastore.service.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -45,6 +40,13 @@ public class UserController {
     public org.springframework.security.core.userdetails.User login() {
         return (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
+
+    @PutMapping(value = "users/{id}")
+    public User update(@PathVariable("id") Long id, @RequestBody UserDto userDto){
+        User updatedUser = updateUserDtoToUser(userService.findById(id), userDto);
+        return userService.update(updatedUser);
+    }
+
 
     private UserDto mapUserToUserDto(User user) {
         UserDto userDto = new UserDto();
@@ -88,4 +90,16 @@ public class UserController {
         address.setStreet(addressDto.getStreet());
         return address;
     }
+
+    private User updateUserDtoToUser(User user, UserDto userDto){
+
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setEmail(userDto.getEmail());
+        user.setAddress(mapAddressDtoToAddress(userDto.getAddress()));
+        user.setPassword(userDto.getPassword());
+
+        return user;
+    }
+
 }
