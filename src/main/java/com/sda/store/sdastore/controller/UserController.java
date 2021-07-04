@@ -42,9 +42,9 @@ public class UserController {
     }
 
     @PutMapping(value = "users/{id}")
-    public User update(@PathVariable("id") Long id, @RequestBody UserDto userDto){
+    public UserDto update(@PathVariable("id") Long id, @RequestBody UserDto userDto){
         User updatedUser = updateUserDtoToUser(userService.findById(id), userDto);
-        return userService.update(updatedUser);
+        return mapUserToUserDto(updatedUser);
     }
 
 
@@ -91,6 +91,15 @@ public class UserController {
         return address;
     }
 
+    private AddressDto mapAddressToAddressDto(Address address) {
+        AddressDto addressDto = new AddressDto();
+        addressDto.setCity(address.getCity());
+        addressDto.setCountry(address.getCountry());
+        addressDto.setZipcode(address.getZipcode());
+        addressDto.setStreet(address.getStreet());
+        return addressDto;
+    }
+
     private User updateUserDtoToUser(User user, UserDto userDto){
 
         user.setFirstName(userDto.getFirstName());
@@ -100,6 +109,18 @@ public class UserController {
         user.setPassword(userDto.getPassword());
 
         return user;
+    }
+
+    private UserDto updateUserToUserDto(User user){
+
+        UserDto userDto = new UserDto();
+        userDto.setFirstName(user.getFirstName());
+        userDto.setLastName(user.getLastName());
+        userDto.setEmail(user.getEmail());
+        userDto.setAddress(mapAddressToAddressDto(user.getAddress()));
+        userDto.setPassword(user.getPassword());
+
+        return userDto;
     }
 
 }

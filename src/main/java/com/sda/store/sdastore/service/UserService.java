@@ -1,5 +1,6 @@
 package com.sda.store.sdastore.service;
 
+import com.sda.store.sdastore.controller.dto.user.UserDto;
 import com.sda.store.sdastore.model.User;
 
 public interface UserService {
