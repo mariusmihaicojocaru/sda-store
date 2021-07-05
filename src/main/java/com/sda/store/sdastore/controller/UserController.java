@@ -1,5 +1,6 @@
 package com.sda.store.sdastore.controller;
 
+import com.sda.store.sdastore.config.ExceptionControllerAdvice;
 import com.sda.store.sdastore.controller.dto.user.AddressDto;
 import com.sda.store.sdastore.controller.dto.user.UserDto;
 import com.sda.store.sdastore.model.*;
@@ -44,12 +45,13 @@ public class UserController {
     @PutMapping(value = "users/{id}")
     public UserDto update(@PathVariable("id") Long id, @RequestBody UserDto userDto){
         User updatedUser = updateUserDtoToUser(userService.findById(id), userDto);
-        return mapUserToUserDto(updatedUser);
+        return mapUserToUserDto(userService.update(updatedUser));
     }
 
 
     private UserDto mapUserToUserDto(User user) {
         UserDto userDto = new UserDto();
+
         userDto.setEmail(user.getEmail());
         userDto.setPassword(user.getPassword());
         userDto.setImageUrl(user.getImageUrl());

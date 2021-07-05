@@ -8,6 +8,7 @@ import com.sda.store.sdastore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.apache.commons.validator.routines.EmailValidator;
 
 import java.util.*;
 
@@ -40,9 +41,30 @@ public class UserServiceImplementation implements UserService {
 
         user.setFirstName(userInDatabase.getFirstName());
         user.setLastName(userInDatabase.getLastName());
-        user.setEmail(userInDatabase.getEmail());
+
+        if(userInDatabase.getEmail() == null || userInDatabase.getEmail() == ""){
+            throw new IllegalArgumentException("Email cannot be null.");
+        }
+        else{
+            EmailValidator validator = EmailValidator.getInstance();
+            if(validator.isValid(userInDatabase.getEmail())){
+                user.setEmail(userInDatabase.getEmail());
+            }
+            else
+                {
+                throw new IllegalArgumentException("Wrong email pattern.");
+            }
+        }
+
         user.setAddress(userInDatabase.getAddress());
-        user.setPassword(userInDatabase.getPassword());
+
+        if(userInDatabase.getPassword() == null || userInDatabase.getPassword() == ""){
+            throw new IllegalArgumentException("Password cannot be null.");
+        }
+        else{
+        user.setPassword(encoder.encode(userInDatabase.getPassword()));
+        }
+
 
         return userRepository.save(user);
     }

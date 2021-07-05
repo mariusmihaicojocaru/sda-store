@@ -2,6 +2,7 @@ package com.sda.store.sdastore.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 import java.util.Set;
 
@@ -13,7 +14,7 @@ public class User {
     private Long id;
 
     @Email
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
     private String password;
