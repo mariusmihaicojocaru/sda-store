@@ -42,9 +42,14 @@ public class UserController {
         return (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
-    @PutMapping(value = "users/{id}")
-    public UserDto update(@PathVariable("id") Long id, @RequestBody UserDto userDto){
-        User updatedUser = updateUserDtoToUser(userService.findById(id), userDto);
+    @GetMapping(value = "/users/{email}")
+    public UserDto getUserByEmail(@PathVariable("email") String email){
+        return mapUserToUserDto(userService.findByEmail(email));
+    }
+
+    @PutMapping(value = "/users/{email}")
+    public UserDto update(@PathVariable("email") String email, @RequestBody UserDto userDto){
+        User updatedUser = updateUserDtoToUser(userService.findByEmail(email), userDto);
         return mapUserToUserDto(userService.update(updatedUser));
     }
 

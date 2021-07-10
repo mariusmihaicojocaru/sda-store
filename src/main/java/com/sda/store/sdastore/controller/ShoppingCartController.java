@@ -1,5 +1,6 @@
 package com.sda.store.sdastore.controller;
 
+import com.sda.store.sdastore.controller.dto.OrderDetailsDto;
 import com.sda.store.sdastore.controller.dto.OrderRequestDto;
 import com.sda.store.sdastore.controller.dto.PaymentDetailsDto;
 import com.sda.store.sdastore.controller.dto.shoppingCart.ShoppingCartOrderLineDto;
@@ -63,7 +64,7 @@ public class ShoppingCartController {
                 .map(shoppingCartOrderLineDto -> mapOrderLineDtoToOrderLine(shoppingCartOrderLineDto))
                 .collect(Collectors.toList());
 
-        Order dbOrder = orderService.createOrder(orderLines, mapPaymentDetailsDtoToPaymentDetails(orderRequestDto.getPaymentDetailsDto()));
+        Order dbOrder = orderService.createOrder(orderLines, mapPaymentDetailsDtoToPaymentDetails(orderRequestDto.getPaymentDetailsDto()), mapOrderDetailsDtoToOrderDetails(orderRequestDto.getOrderDetailsDto()));
 
         if(dbOrder != null){
             return HttpStatus.OK;
@@ -75,11 +76,11 @@ public class ShoppingCartController {
     // TODO de vazut cand facem componenta de shopping cart
     @DeleteMapping("shopping-cart/delete/{id}")
     public HttpStatus deleteProduct(@PathVariable("id") Long id){
-//        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        User user = userService.findByEmail(loggedUser.getUsername());
-//        if(user.getShoppingCart().getProductList().contains(productService.findById(id))){
-//            productService.deleteProduct(id);
-//        }
+        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByEmail(loggedUser.getUsername());
+        if(user.getShoppingCart().getProductList().contains(productService.findById(id))){
+            shoppingCartService.removeProductFromCart(productService.findById(id), user.getShoppingCart());
+        }
         return HttpStatus.OK;
     }
 
@@ -110,6 +111,14 @@ public class ShoppingCartController {
         paymentDetails.setCardProvider(paymentDetailsDto.getCardProvider());
 
         return paymentDetails;
+    }
+
+    public OrderDetails mapOrderDetailsDtoToOrderDetails(OrderDetailsDto orderDetailsDto){
+        OrderDetails orderDetails = new OrderDetails();
+        orderDetails.setShippingDetails(orderDetailsDto.getShippingDetails());
+        orderDetails.setAdditionalInfo(orderDetailsDto.getAdditionalInfo());
+
+        return orderDetails;
     }
 
     public ShoppingCartResponseDto mapShoppingCartToResponseDto(ShoppingCart shoppingCart){

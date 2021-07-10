@@ -37,24 +37,24 @@ public class UserServiceImplementation implements UserService {
     @Override
     public User update (User user) {
 
-        User userInDatabase = userRepository.findById(user.getId()).orElse(null);
+        User userInDatabase = userRepository.findByEmail(user.getEmail());
 
         user.setFirstName(userInDatabase.getFirstName());
         user.setLastName(userInDatabase.getLastName());
 
-        if(userInDatabase.getEmail() == null || userInDatabase.getEmail() == ""){
-            throw new IllegalArgumentException("Email cannot be null.");
-        }
-        else{
-            EmailValidator validator = EmailValidator.getInstance();
-            if(validator.isValid(userInDatabase.getEmail())){
+//        if(userInDatabase.getEmail() == null || userInDatabase.getEmail() == ""){
+//            throw new IllegalArgumentException("Email cannot be null.");
+//        }
+//        else{
+//            EmailValidator validator = EmailValidator.getInstance();
+//            if(validator.isValid(userInDatabase.getEmail())){
                 user.setEmail(userInDatabase.getEmail());
-            }
-            else
-                {
-                throw new IllegalArgumentException("Wrong email pattern.");
-            }
-        }
+//            }
+//            else
+//                {
+//                throw new IllegalArgumentException("Wrong email pattern.");
+//            }
+//        }
 
         user.setAddress(userInDatabase.getAddress());
 

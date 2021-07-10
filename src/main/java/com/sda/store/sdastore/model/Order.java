@@ -22,6 +22,9 @@ public class Order {
     @OneToOne(cascade = CascadeType.ALL)
     private PaymentDetails paymentDetails;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private OrderDetails orderDetails;
+
     //relatie cu payment details
 
     public Long getId() {
@@ -62,5 +65,13 @@ public class Order {
 
     public void setPaymentDetails(PaymentDetails paymentDetails) {
         this.paymentDetails = paymentDetails;
+    }
+
+    public OrderDetails getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(OrderDetails orderDetails) {
+        this.orderDetails = orderDetails;
     }
 }

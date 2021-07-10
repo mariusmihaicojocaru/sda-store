@@ -33,7 +33,7 @@ public class OrderServiceImplementation implements OrderService {
     }
 
     @Override
-    public Order createOrder(List<OrderLine> orderLineList, PaymentDetails paymentDetails) {
+    public Order createOrder(List<OrderLine> orderLineList, PaymentDetails paymentDetails, OrderDetails orderDetails) {
         Order order = new Order();
         UserDetails springUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findByEmail(springUser.getUsername());
@@ -42,6 +42,7 @@ public class OrderServiceImplementation implements OrderService {
         order.setUser(user);
         order.setTotal(getTotal(orderLineList));
         order.setPaymentDetails(paymentDetails);
+        order.setOrderDetails(orderDetails);
 
         //salvam order
         Order dbOrder = orderRepository.save(order);
